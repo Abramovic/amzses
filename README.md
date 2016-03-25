@@ -3,18 +3,20 @@ amzses
 
 This is a Go package to send emails using Amazon's Simple Email Service.
 
+This is a fork of [github.com/stathat/amzses](github.com/stathat/amzses)
+
 Installation
 ------------
 
 Use `go install`:
 
-    go install github.com/stathat/amzses
+    go install github.com/Abramovic/amzses
 
 If you are building your code with `goinstall`, you can skip the previous step and just
 import `amzses` as follows:
 
     import (
-            "github.com/stathat/amzses"
+            "github.com/Abramovic/amzses"
     )
 
 Using `go install` will automatically install its one external dependency,
@@ -43,3 +45,5 @@ About
 -----
 
 Written by Patrick Crosby at [StatHat](http://www.stathat.com).  Twitter:  [@stat_hat](http://twitter.com/stat_hat)
+
+Modified by [Nick Abramovic](http://github.com/Abramovic)

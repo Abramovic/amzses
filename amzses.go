@@ -18,7 +18,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -28,25 +27,15 @@ const (
 )
 
 type Client struct {
-	accessKey string
-	secretKey string
+	accessKey, secretKey string
 }
 
 func NewClient(sesAccessKey, sesSecretKey string) *Client {
-	client := &Client{accessKey: sesAccessKey, secretKey: sesSecretKey}
-	return client
+	return &Client{accessKey: sesAccessKey, secretKey: sesSecretKey}
 }
 
 func (c *Client) SendMail(from, to, subject, body string) (string, error) {
-	data := make(url.Values)
-	data.Add("Action", "SendEmail")
-	data.Add("Source", from)
-	data.Add("Destination.ToAddresses.member.1", to)
-	data.Add("Message.Subject.Data", subject)
-	data.Add("Message.Body.Text.Data", body)
-	data.Add("AWSAccessKeyId", c.accessKey)
-
-	return c.sesPost(data)
+	return c.SendMultipleMail(from, []string{to}, subject, body)
 }
 
 func (c *Client) SendMultipleMail(from string, to []string, subject, body string) (string, error) {
@@ -54,26 +43,16 @@ func (c *Client) SendMultipleMail(from string, to []string, subject, body string
 	data.Add("Action", "SendEmail")
 	data.Add("Source", from)
 	for i, t := range to {
-		data.Add("Destination.ToAddresses.member."+strconv.Itoa(i+1), t)
+		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%s", (i+1)), t)
 	}
 	data.Add("Message.Subject.Data", subject)
 	data.Add("Message.Body.Text.Data", body)
 	data.Add("AWSAccessKeyId", c.accessKey)
-
 	return c.sesPost(data)
 }
 
 func (c *Client) SendMailHTML(from, to, subject, bodyText, bodyHTML string) (string, error) {
-	data := make(url.Values)
-	data.Add("Action", "SendEmail")
-	data.Add("Source", from)
-	data.Add("Destination.ToAddresses.member.1", to)
-	data.Add("Message.Subject.Data", subject)
-	data.Add("Message.Body.Text.Data", bodyText)
-	data.Add("Message.Body.Html.Data", bodyHTML)
-	data.Add("AWSAccessKeyId", c.accessKey)
-
-	return c.sesPost(data)
+	return c.SendMultipleMailHTML(from, []string{to}, subject, bodyText, bodyHTML)
 }
 
 func (c *Client) SendMultipleMailHTML(from string, to []string, subject, bodyText, bodyHTML string) (string, error) {
@@ -81,13 +60,12 @@ func (c *Client) SendMultipleMailHTML(from string, to []string, subject, bodyTex
 	data.Add("Action", "SendEmail")
 	data.Add("Source", from)
 	for i, t := range to {
-		data.Add("Destination.ToAddresses.member."+strconv.Itoa(i+1), t)
+		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%s", (i+1)), t)
 	}
 	data.Add("Message.Subject.Data", subject)
 	data.Add("Message.Body.Text.Data", bodyText)
 	data.Add("Message.Body.Html.Data", bodyHTML)
 	data.Add("AWSAccessKeyId", c.accessKey)
-
 	return c.sesPost(data)
 }
 
