@@ -42,8 +42,10 @@ func (c *Client) SendMultipleMail(from string, to []string, subject, body string
 	data := make(url.Values)
 	data.Add("Action", "SendEmail")
 	data.Add("Source", from)
-	for i, t := range to {
-		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%s", (i+1)), t)
+	i := 0
+	for _, t := range to {
+		i++
+		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%d", i), t)
 	}
 	data.Add("Message.Subject.Data", subject)
 	data.Add("Message.Body.Text.Data", body)
@@ -59,8 +61,10 @@ func (c *Client) SendMultipleMailHTML(from string, to []string, subject, bodyTex
 	data := make(url.Values)
 	data.Add("Action", "SendEmail")
 	data.Add("Source", from)
-	for i, t := range to {
-		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%s", (i+1)), t)
+	i := 0
+	for _, t := range to {
+		i++
+		data.Add(fmt.Sprintf("Destination.ToAddresses.member.%d", i), t)
 	}
 	data.Add("Message.Subject.Data", subject)
 	data.Add("Message.Body.Text.Data", bodyText)
