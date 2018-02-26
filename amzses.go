@@ -22,22 +22,27 @@ import (
 	"time"
 )
 
-const (
-	endpoint = "https://email.us-east-1.amazonaws.com"
+var (
+	endpoint = "https://email.us-west-2.amazonaws.com"
 )
 
+// Client stores the access key and secret
 type Client struct {
 	accessKey, secretKey string
 }
 
-func NewClient(sesAccessKey, sesSecretKey string) *Client {
+// NewClient returns back the amzses client
+func NewClient(sesAccessKey, sesSecretKey, region string) *Client {
+	endpoint = fmt.Sprintf(`https://email.%s.amazonaws.com`, region)
 	return &Client{accessKey: sesAccessKey, secretKey: sesSecretKey}
 }
 
+// SendMail sends an email to one recipient
 func (c *Client) SendMail(from, to, subject, body string) (string, error) {
 	return c.SendMultipleMail(from, []string{to}, subject, body)
 }
 
+// SendMultipleMail takes in a slice of email recipients to send an email to
 func (c *Client) SendMultipleMail(from string, to []string, subject, body string) (string, error) {
 	data := make(url.Values)
 	data.Add("Action", "SendEmail")
